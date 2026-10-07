@@ -21,7 +21,7 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${process.env.XAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'grok-beta',
+        model: 'grok-2-latest',
         messages: [
           { role: 'system', content: 'Tu és o Jarvis, um assistente virtual inteligente e prestativo.' },
           { role: 'user', content: message }
@@ -30,6 +30,11 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: data.error || 'Erro na API da xAI' });
+    }
+
     return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json({ error: 'Erro ao ligar à API do Grok', details: error.message });
